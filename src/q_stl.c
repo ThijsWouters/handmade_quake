@@ -7,7 +7,7 @@ int32_t Q_atoi(uint8_t *str) {
 
   if (*str == '-') {
     sign = -1;
-    str++;
+    ++str;
   }
 
   if (*str == '0' && (str[1] == 'x' || str[1] == 'X')) {
@@ -26,30 +26,17 @@ int32_t Q_atoi(uint8_t *str) {
       } else {
         result += (*str - '0');
       }
-      str++;
+      ++str;
     }
   } else {
     // Decimal
     while (*str >= '0' && *str <= '9') {
       result *= 10;
       result += (*str - '0');
-      str++;
+      ++str;
     }
   }
 
   return result * sign;
-}
-
-int32_t Q_strcmp(uint8_t *s1, uint8_t *s2) {
-  while (*s1 == *s2) {
-    if (*s1 == 0) {
-      return 0;
-    }
-
-    s1++;
-    s2++;
-  }
-
-  return *s1 > *s2 ? 1 : -1;
 }
 
