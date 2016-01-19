@@ -1,9 +1,8 @@
 #include <stdint.h>
 
-int32_t Q_atoi(uint8_t *str) {
+int32_t Q_atoi(const char *str) {
   int32_t sign = 1;
   int32_t result = 0;
-  uint8_t c;
 
   if (*str == '-') {
     sign = -1;

@@ -1,4 +1,4 @@
 #pragma once
 
-int32_t Q_atoi(uint8_t *str);
+int32_t Q_atoi(const char *str);
 
