@@ -4,6 +4,7 @@ AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CHECK_HEADERS([stdint.h])
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([string.h])
+AC_CHECK_FUNCS([clock_gettime])
 AC_PROG_CC
 AC_PATH_X
 AC_PROG_CC_STDC

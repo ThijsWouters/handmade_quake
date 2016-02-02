@@ -3,7 +3,7 @@
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
+#include "host.h"
 
 int8_t IsRunning = 1;
 
@@ -27,8 +27,9 @@ double time_in_sec() {
   return result;
 }
 
-void Sys_InitFloatTime() {
+float Sys_InitFloatTime() {
   tick = time_in_sec();
+  return 0;
 }
 
 float Sys_FloatTime() {
@@ -62,7 +63,11 @@ int32_t main(int32_t argc, char* argv[]) {
 
   XMapWindow(display, frame_window);
 
-  Sys_InitFloatTime();
+  Host_Init();
+
+  float oldTime = Sys_InitFloatTime();
+  float targetTime = 1.0f / 60.0f;
+  float timeAcc = 0;
 
   while(IsRunning) {
     while (XEventsQueued(display, QueuedAfterFlush) > 0) {
@@ -79,7 +84,14 @@ int32_t main(int32_t argc, char* argv[]) {
       }
     }
 
-    printf("%3.9f\n", Sys_FloatTime());
+    float newTime = Sys_FloatTime();
+    timeAcc += newTime - oldTime;
+    oldTime = newTime;
+
+    if (timeAcc > targetTime) {
+      Host_Frame(targetTime);
+      timeAcc -= targetTime;
+    }
   }
 
   return 0;
