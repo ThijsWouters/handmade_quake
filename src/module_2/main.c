@@ -3,18 +3,45 @@
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 int8_t IsRunning = 1;
 
-double time_in_sec(){
+void Sys_Shutdown() {
+  IsRunning = 0;
+}
+
+///////////////
+// Timer
+///////////////
+
+double tick = 0;
+double time_passed = 0;
+
+double time_in_sec() {
   struct timespec time;
-  double result;
-  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
-  result = (double) time.tv_nsec;
+  clock_gettime(CLOCK_MONOTONIC, &time);
+  double result = (double) time.tv_nsec;
   result /= 1000000000.0;
   result += (double) time.tv_sec;
   return result;
 }
+
+void Sys_InitFloatTime() {
+  tick = time_in_sec();
+}
+
+float Sys_FloatTime() {
+  double tock = time_in_sec();
+  double result = tock - tick;
+  tick = tock;
+  time_passed += result;
+  return (float) time_passed;
+}
+
+/////////////////
+// End Timer
+////////////////
 
 int32_t main(int32_t argc, char* argv[]) {
   Display *display;
@@ -35,22 +62,16 @@ int32_t main(int32_t argc, char* argv[]) {
 
   XMapWindow(display, frame_window);
 
-  double seconds_per_clock = 1.0 / (double) CLOCKS_PER_SEC;
-
-  double tick, tock;
-  tick = time_in_sec();
+  Sys_InitFloatTime();
 
   while(IsRunning) {
-    if (XEventsQueued(display, QueuedAfterFlush) > 0) {
+    while (XEventsQueued(display, QueuedAfterFlush) > 0) {
       XNextEvent(display, (XEvent*) &event);
 
       switch(event.type) {
-        case KeyPress:
-          IsRunning = 0;
-          break;
         case ClientMessage:
           if (event.xclient.data.l[0] == WM_DELETE_WINDOW) {
-            IsRunning = 0;
+            Sys_Shutdown();
           }
           break;
         default:
@@ -58,11 +79,7 @@ int32_t main(int32_t argc, char* argv[]) {
       }
     }
 
-    tock = time_in_sec();
-
-    double seconds_gone_by = tock - tick;
-    tick = tock;
-    printf("%3.9f\n", seconds_gone_by);
+    printf("%3.9f\n", Sys_FloatTime());
   }
 
   return 0;
