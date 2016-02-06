@@ -1,1 +1,1 @@
-SUBDIRS = src src/module_2
+SUBDIRS = src

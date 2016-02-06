@@ -11,5 +11,5 @@ AC_PROG_CC_STDC
 AC_TYPE_INT8_T
 AC_TYPE_INT32_T
 AC_TYPE_UINT8_T
-AC_CONFIG_FILES([Makefile src/Makefile src/module_2/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
