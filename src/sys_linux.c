@@ -71,8 +71,6 @@ int32_t main(int32_t argc, char* argv[]) {
   Host_Init();
 
   float oldTime = Sys_InitFloatTime();
-  float targetTime = 1.0f / 60.0f;
-  float timeAcc = 0;
 
   while(IsRunning) {
     while (XEventsQueued(display, QueuedAfterFlush) > 0) {
@@ -90,13 +88,9 @@ int32_t main(int32_t argc, char* argv[]) {
     }
 
     float newTime = Sys_FloatTime();
-    timeAcc += newTime - oldTime;
+    Host_Frame(newTime - oldTime);
     oldTime = newTime;
 
-    if (timeAcc > targetTime) {
-      Host_Frame(targetTime);
-      timeAcc -= targetTime;
-    }
   }
 
   return 0;

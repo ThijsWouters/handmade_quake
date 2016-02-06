@@ -1,4 +1,7 @@
 #pragma once
+#include <stdint.h>
+
+typedef enum {false, true} qboolean;
 
 extern int32_t com_argc;
 extern char** com_argv;
